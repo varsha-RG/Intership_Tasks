@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatReal - Modern Chat App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="default-avatar.svg">
+    <meta name="theme-color" content="#111827">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+</head>
+<body>
+    <!-- Loading animation -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <div class="app-container">
+        <!-- Auth Forms -->
+        <div id="auth-container" class="auth-container">
+            <div class="auth-box">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-form="login">Login</button>
+                    <button class="auth-tab" data-form="register">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form hidden">
+                    <input type="text" placeholder="Username" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Chat Interface -->
+        <div id="chat-container" class="chat-container hidden">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="user-profile">
+                    <img id="user-avatar" src="default-avatar.svg" alt="User Icon" />
+                    <span id="username">Username</span>
+                </div>
+                
+                <div class="sidebar-tabs">
+                    <button class="sidebar-tab active" data-tab="rooms">Rooms</button>
+                    <button class="sidebar-tab" data-tab="private">Private</button>
+                </div>
+                
+                <!-- Rooms List -->
+                <div id="rooms-list" class="rooms-list">
+                    <button id="create-room" class="create-button">Create Room</button>
+                    <div class="list-container"></div>
+                </div>
+                
+                <!-- Private Chats List -->
+                <div id="private-list" class="private-list hidden">
+                    <button id="new-chat" class="create-button">New Chat</button>
+                    <div class="list-container"></div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h2 id="chat-title">Select a chat</h2>
+                    <div id="chat-info">
+                        <span id="members-count"></span>
+                        <button id="leave-chat" class="hidden">Leave</button>
+                    </div>
+                </div>
+                
+                <div id="messages" class="messages"></div>
+                
+                <form id="message-form" class="message-form">
+                    <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                    <button type="submit" disabled>Send</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="create-room-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Create New Room</h2>
+                <form id="create-room-form">
+                    <input type="text" placeholder="Room Name" required>
+                    <textarea placeholder="Description (optional)"></textarea>
+                    <select name="room-type">
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                    <div class="modal-buttons">
+                        <button type="button" class="cancel-button">Cancel</button>
+                        <button type="submit">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="user-search-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Find Users</h2>
+                <input type="text" id="user-search" placeholder="Search by username or email">
+                <div id="search-results" class="search-results"></div>
+                <button class="cancel-button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

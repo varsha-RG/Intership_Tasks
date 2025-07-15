@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Employees</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>All Employees</h2>
+    <button onclick="logout()">Logout</button>
+    <button onclick="location.href='add.html'">+ Add Employee</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Role</th><th>Email</th><th>Phone</th><th>Dept</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="empTable"></tbody>
+    </table>
+  </div>
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "login.html";
+
+    async function fetchEmployees() {
+      const res = await fetch("/api/employees", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const employees = await res.json();
+      console.log("Fetched Employees from backend:", employees);
+
+      const table = document.getElementById("empTable");
+
+      employees.forEach((e) => {
+        table.innerHTML += `
+          <tr>
+            <td>${e.name}</td>
+            <td>${e.role}</td>
+            <td>${e.email}</td>
+            <td>${e.phone}</td>
+            <td>${e.department}</td>
+            <td>
+              <button onclick="edit('${e._id}')">Edit</button>
+              <button onclick="del('${e._id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+
+    function edit(id) {
+      localStorage.setItem("editId", id);
+      window.location.href = "update.html";
+    }
+
+    async function del(id) {
+      if (confirm("Are you sure?")) {
+        await fetch(`/api/employees/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        location.reload();
+      }
+    }
+
+    fetchEmployees();
+  </script>
+</body>
+</html>

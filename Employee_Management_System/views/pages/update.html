@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Employee</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Update Employee</h2>
+    <form id="updateForm">
+      <input type="text" placeholder="Name" id="Ename" required />
+      <input type="text" placeholder="Role" id="role" required />
+      <input type="email" placeholder="Email" id="email" required />
+      <input type="text" placeholder="Phone" id="phone" required />
+      <input type="text" placeholder="Department" id="department" required />
+      <button type="submit">Update</button>
+    </form>
+    <button onclick="location.href='dashboard.html'">Cancel</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("editId");
+    if (!token || !id) window.location.href = "login.html";
+
+    async function fetchEmployee() {
+      const res = await fetch("/api/employees", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const emp = data.find((e) => e._id === id);
+
+      document.getElementById("Ename").value = emp.name;
+      document.getElementById("role").value = emp.role;
+      document.getElementById("email").value = emp.email;
+      document.getElementById("phone").value = emp.phone;
+      document.getElementById("department").value = emp.department;
+
+    }
+
+    fetchEmployee();
+
+    document.getElementById("updateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+      name: document.getElementById("Ename").value,
+      role: document.getElementById("role").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      department: document.getElementById("department").value,
+};
+
+
+      const res = await fetch(`/api/employees/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        msg.innerText = "Employee updated!";
+        localStorage.removeItem("editId");
+      } else {
+        msg.innerText = "Update failed: " + result.msg;
+      }
+    });
+  </script>
+</body>
+</html>
